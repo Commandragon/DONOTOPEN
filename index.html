@@ -1,6 +1,17 @@
 <!doctype html>
-<body><script> window.onbeforeunload = function (e) { e = e || window.event; if (e) { e.returnValue = 'Sure?'; } return 'Sure?'; }; </script></body>
 
+<!--
+  The Annoying Site
+  https://theannoyingsite.com
+
+  Author:
+    Feross Aboukhadijeh
+    https://feross.org
+
+  Patreon:
+    If you enjoyed this, please support me on Patreon!
+    https://www.patreon.com/feross
+-->
 
 <html>
 <head>
@@ -57,27 +68,236 @@
 <body>
 
 <template>
-  <div class='hello-message'>
-    <h1>Welcome to games V4</h1>
-    <h2>To start playing games HOLD DOWN SPACE KEY FOR 3 seconds!</h2>
-    <h3>(or, on mobile, tap the picture!)</h3>
 
-    <img src='cat-cute.jpg' alt='Cute cat' />
   </div>
   <div class='logout-messages'></div>
 </template>
-  
-<script src='index.js'></script>
 
-<script async src='https://www.googletagmanager.com/gtag/js?id=UA-3898076-24'></script>
-<script>
-  window.dataLayer = window.dataLayer || []
-  function gtag () {
-    window.dataLayer.push(arguments)
-  }
-  gtag('js', new Date())
-  gtag('config', 'UA-3898076-24')
-</script>
+<script src='/index.js'></script>
 
-</body>
-</html>
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Услуги по ловле кошек</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <div class="welcome-container blur-background">
+
+    </div>
+
+    <div class="content">
+      <header>
+        <h1>Услуги по ловле кошек</h1>
+        <nav>
+          <ul>
+            <li><a href="#services">Услуги</a></li>
+            <li><a href="#about">О нас</a></li>
+            <li><a href="#contact">Контакты</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <section id="services">
+        <h2>Наши услуги</h2>
+        <p>Введение в услуги по ловле кошек: Добро пожаловать в услуги по ловле кошек, ваш лучший выбор для
+          профессиональных решений по ловле кошек. В услугах по ловле кошек мы понимаем важность обеспечения
+          безопасности и благополучия как кошек, так и их владельцев. С нашей командой опытных профессионалов и
+          гуманными методами ловли мы предлагаем надежную помощь в обращении с бездомными или потерянными кошками в
+          городских и пригородных районах. Будь то спасение застрявшей кошки или безопасная пересадка действующей
+          кошки, наша миссия - предоставить эффективные и сострадательные решения для кошачьих проблем в сообществе.</p>
+        <p>Комплексные услуги: Наш веб-сайт демонстрирует широкий спектр комплексных услуг, адаптированных для
+          удовлетворения разнообразных потребностей наших клиентов. От программ ловли-стерилизации-возвращения до
+          операций по спасению кошек в чрезвычайных ситуациях, мы отдаем приоритет благополучию животных, учитывая
+          такие проблемы, как перенаселение и общественная безопасность. Посетители нашего сайта могут изучить
+          подробные описания каждой услуги, включая наш подход, используемое оборудование и успехи из удовлетворенных
+          клиентов. Кроме того, мы предлагаем образовательные ресурсы по ответственному содержанию домашних животных,
+          управлению бродячими кошками и советы по предотвращению кошачьих неприятностей.</p>
+      </section>
+
+      <section id="about">
+        <h2>О нас</h2>
+        <p>О нас и контактная информация: Узнайте больше о преданной команде за услуги по ловле кошек и нашем
+          обязательстве перед благополучием животных. Наш раздел "О нас" предоставляет информацию о ценностях нашей
+          компании, экспертизе и участии в общественной жизни. Клиенты могут легко связаться с нами через нашу
+          контактную форму или найти наши контактные данные для прямого общения. Будь то назначение консультации,
+          сообщение о нахождении бездомной кошки или поиск советов по уходу за кошкой, наш дружелюбный персонал
+          готов помочь вам на каждом этапе. Присоединяйтесь к нам в нашем streben к тому, чтобы сделать мир безопаснее
+          и счастливее для кошек и людей!</p>
+      </section>
+
+      <section id="contact">
+        <h2>Контакты</h2>
+        <p>Форма обратной связи или контактная информация.</p>
+      </section>
+
+      <footer>
+        <p>&copy; 2024 Услуги по ловле кошек. Все права защищены.</p>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: Arial, sans-serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          background-color: #f0f0f0;
+          /* Background color of the page */
+        }
+
+        #overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          /* Background color of the overlay */
+          backdrop-filter: blur(10px);
+          /* Blur effect */
+          z-index: 9999;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        #button-container {
+          text-align: center;
+        }
+      </style>
+    </head>
+
+    <body>
+
+      <div id="overlay">
+        <button class="styled-button" onclick="removeOverlay()">Добро пожаловать!</button>
+
+      </div>
+
+      <script>
+        function removeOverlay() {
+          document.getElementById("overlay").style.display = "none";
+        }
+      </script>
+
+    </body>
+
+    </html>
+
+
+
+
+
+
+
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+        /* Hide overflow to prevent scrolling */
+      }
+
+
+
+      .styled-button {
+        position: relative;
+        display: inline-block;
+        padding: 20px 40px;
+        /* Adjust padding for button size */
+        font-size: 20px;
+        /* Adjust font size for button text */
+        font-weight: bold;
+        text-decoration: none;
+        color: #ffffff;
+        background: linear-gradient(135deg, #00b09b, #96c93d);
+        /* Gradient background */
+        border: none;
+        border-radius: 10px;
+        /* Rounded corners */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        /* Shadow effect */
+        overflow: hidden;
+        /* Hide overflowing elements */
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+      }
+
+      .styled-button:hover {
+        transform: scale(1.05);
+        /* Enlarge on hover */
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 0 40px #ffffff;
+        /* Enhanced shadow and glow on hover */
+        background: linear-gradient(135deg, #ff6ec4, #7873f5);
+        /* Gradient background on hover */
+      }
+
+      .styled-button::after {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        animation: pulsate-text 2s infinite;
+        /* Pulsating effect on button text */
+      }
+
+      @keyframes pulsate-text {
+        0% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.05);
+        }
+
+        100% {
+          transform: scale(1);
+        }
+      }
+    </style>
+    </head>
+
+    <body>
