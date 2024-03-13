@@ -213,7 +213,6 @@ function init () {
     focusWindows()
     copySpamToClipboard()
     speak()
-    startTheramin()
 
     // Capture key presses on the Command or Control keys, to interfere with the
     // "Close Window" shortcut.
@@ -635,39 +634,7 @@ function speak (phrase) {
  * event.
  * Based on https://github.com/feross/TheAnnoyingSite.com/pull/2
  */
-function startTheramin () {
-  const audioContext = new AudioContext()
-  const oscillatorNode = audioContext.createOscillator()
-  const gainNode = audioContext.createGain()
 
-  const pitchBase = 50
-  const pitchRange = 4000
-
-  const wave = audioContext.createPeriodicWave(
-    Array(10).fill(0).map((v, i) => Math.cos(i)),
-    Array(10).fill(0).map((v, i) => Math.sin(i))
-  )
-
-  oscillatorNode.setPeriodicWave(wave)
-
-  oscillatorNode.connect(gainNode)
-  gainNode.connect(audioContext.destination)
-
-  oscillatorNode.start(0)
-
-  const oscillator = ({ pitch, volume }) => {
-    oscillatorNode.frequency.value = pitchBase + pitch * pitchRange
-    gainNode.gain.value = volume * 0.5
-  }
-
-  document.body.addEventListener('mousemove', event => {
-    const { clientX, clientY } = event
-    const { clientWidth, clientHeight } = document.body
-    const pitch = (clientX - clientWidth / 2) / clientWidth
-    const volume = (clientY - clientHeight / 2) / clientHeight
-    oscillator({ pitch, volume })
-  })
-}
 
 /**
  * Attempt to read the user's clipboard.
