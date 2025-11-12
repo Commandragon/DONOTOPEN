@@ -1,303 +1,92 @@
 <!doctype html>
-
-<!--
-  The Annoying Site
-  https://theannoyingsite.com
-
-  Author:
-    Feross Aboukhadijeh
-    https://feross.org
-
-  Patreon:
-    If you enjoyed this, please support me on Patreon!
-    https://www.patreon.com/feross
--->
-
-<html>
-<head>
-  <meta charset='UTF-8'>
-  <meta name='theme-color' content='#fff' class='theme-color'/>
-  <style>
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
-        'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
-        sans-serif;
-      overflow: hidden;
-    }
-    .hello-message {
-      margin: 40px;
-      text-align: center;
-    }
-    .logout-messages {
-      pointer-events: none;
-      color: red;
-      margin: 40px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      text-shadow: 2px 2px #FFF, 4px 4px 10px #000;
-    }
-    img {
-      width: 300px;
-    }
-    @keyframes blurslowly {
-      0% {
-        filter: none;
-      }
-      92% {
-        filter: blur(0);
-      }
-      96% {
-        filter: blur(1px);
-      }
-      100% {
-        filter: blur(0);
-      }
-    }
-    body {
-      animation-name: blurslowly;
-      animation-iteration-count: infinite;
-      animation-duration: 15s;
-      animation-play-state: running;
-    }
-  </style>
-</head>
-<body>
-
-<template>
-
-  </div>
-  <div class='logout-messages'></div>
-</template>
-
-<script src='/index.js'></script>
-
-  <!DOCTYPE html>
-  <html lang="en">
-
+<html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Услуги по ловле кошек</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Cat Catcher — Visual Demo</title>
+    <meta name='theme-color' content='#ffdede' class='theme-color'/>
+    <style>
+      :root{
+        --bg:#0f1724;
+        --accent:#ffdd57;
+        --muted:#a6adbd;
+      }
+      html,body{
+        height:100%;
+        margin:0;
+        font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+        background:linear-gradient(180deg,#071028 0%, #0f1724 100%);
+        color:#fff;
+        overflow:hidden;
+      }
+      .game-area{position:relative;width:100vw;height:100vh;display:block}
+      .hud{position:absolute;left:16px;top:16px;z-index:40}
+      .title{font-size:20px;font-weight:700;margin:0 0 6px 0;color:var(--accent)}
+      .subtitle{font-size:12px;color:var(--muted);margin:0}
+      .cats-layer{position:absolute;inset:0;pointer-events:none}
+      .cat{position:absolute;width:72px;height:72px;background-size:cover;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);pointer-events:auto;cursor:pointer}
+      .hold-ui{position:fixed;left:50%;transform:translateX(-50%);bottom:36px;z-index:45;width:520px;max-width:90%;}
+      .prompt{font-weight:700;color:#fff;text-align:center;margin-bottom:8px;font-size:16px;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+      .bar{height:20px;background:rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+      .bar > .fill{height:100%;width:0%;background:linear-gradient(90deg,#ff9e3b,#ffd94d);transition:width 60ms linear}
+      .cta{margin-top:10px;text-align:center;color:var(--muted);font-size:13px}
+      .floating{position:fixed;right:20px;top:20px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));padding:8px 12px;border-radius:12px;font-weight:700;backdrop-filter:blur(6px);z-index:50}
+      .encourage{color:var(--accent);display:inline-block;margin-left:8px}
+      @media (max-width:480px){.cat{width:56px;height:56px}}
+
+      /* locked / holding visuals */
+      .cats-layer.locked { filter: blur(3px) saturate(.7) contrast(.9); opacity:.55; transition:filter .3s, opacity .3s }
+      .cats-layer.unlocked { filter: none; opacity:1; transition:filter .4s, opacity .4s }
+
+      .hold-ui .prompt { transition: transform .18s ease, color .18s ease }
+      body.holding .hold-ui .prompt { transform: scale(1.06); color: #fff7df }
+
+      /* glowing bar while holding */
+      body.holding .bar > .fill { box-shadow: 0 6px 24px rgba(255,160,80,.18), inset 0 0 12px rgba(255,255,255,.04); transition: width 40ms linear }
+      body.holding .bar { transform: translateY(-4px); transition: transform .18s ease }
+
+      /* little surprise banner (unchanged) */
+      .surprise-banner{
+        position:fixed;left:50%;top:18%;transform:translateX(-50%) scale(.98);
+        background:linear-gradient(90deg,#fff7d6,#ffd9e0);
+        color:#2c1f3b;padding:18px 28px;border-radius:14px;font-weight:900;font-size:22px;z-index:250;
+        box-shadow:0 12px 30px rgba(0,0,0,.4);opacity:0;transition:opacity .3s,transform .45s;
+      }
+      .surprise-banner.show{opacity:1;transform:translateX(-50%) scale(1)}
+    </style>
   </head>
-
   <body>
-    <div class="welcome-container blur-background">
-
-    </div>
-
-    <div class="content">
-      <header>
-        <h1>Услуги по ловле кошек</h1>
-        <nav>
-          <ul>
-            <li><a href="#services">Услуги</a></li>
-            <li><a href="#about">О нас</a></li>
-            <li><a href="#contact">Контакты</a></li>
-          </ul>
-        </nav>
-      </header>
-
-      <section id="services">
-        <h2>Наши услуги</h2>
-        <p>Введение в услуги по ловле кошек: Добро пожаловать в услуги по ловле кошек, ваш лучший выбор для
-          профессиональных решений по ловле кошек. В услугах по ловле кошек мы понимаем важность обеспечения
-          безопасности и благополучия как кошек, так и их владельцев. С нашей командой опытных профессионалов и
-          гуманными методами ловли мы предлагаем надежную помощь в обращении с бездомными или потерянными кошками в
-          городских и пригородных районах. Будь то спасение застрявшей кошки или безопасная пересадка действующей
-          кошки, наша миссия - предоставить эффективные и сострадательные решения для кошачьих проблем в сообществе.</p>
-        <p>Комплексные услуги: Наш веб-сайт демонстрирует широкий спектр комплексных услуг, адаптированных для
-          удовлетворения разнообразных потребностей наших клиентов. От программ ловли-стерилизации-возвращения до
-          операций по спасению кошек в чрезвычайных ситуациях, мы отдаем приоритет благополучию животных, учитывая
-          такие проблемы, как перенаселение и общественная безопасность. Посетители нашего сайта могут изучить
-          подробные описания каждой услуги, включая наш подход, используемое оборудование и успехи из удовлетворенных
-          клиентов. Кроме того, мы предлагаем образовательные ресурсы по ответственному содержанию домашних животных,
-          управлению бродячими кошками и советы по предотвращению кошачьих неприятностей.</p>
-      </section>
-
-      <section id="about">
-        <h2>О нас</h2>
-        <p>О нас и контактная информация: Узнайте больше о преданной команде за услуги по ловле кошек и нашем
-          обязательстве перед благополучием животных. Наш раздел "О нас" предоставляет информацию о ценностях нашей
-          компании, экспертизе и участии в общественной жизни. Клиенты могут легко связаться с нами через нашу
-          контактную форму или найти наши контактные данные для прямого общения. Будь то назначение консультации,
-          сообщение о нахождении бездомной кошки или поиск советов по уходу за кошкой, наш дружелюбный персонал
-          готов помочь вам на каждом этапе. Присоединяйтесь к нам в нашем streben к тому, чтобы сделать мир безопаснее
-          и счастливее для кошек и людей!</p>
-      </section>
-
-      <section id="contact">
-        <h2>Контакты</h2>
-        <p>Форма обратной связи или контактная информация.</p>
-      </section>
-
-      <footer>
-        <p>&copy; 2024 Услуги по ловле кошек. Все права защищены.</p>
-      </footer>
-    </div>
-
-    <script src="script.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!DOCTYPE html>
-    <html lang="en">
-
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <style>
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: Arial, sans-serif;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-          background-color: #f0f0f0;
-          /* Background color of the page */
-        }
-
-        #overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.5);
-          /* Background color of the overlay */
-          backdrop-filter: blur(10px);
-          /* Blur effect */
-          z-index: 9999;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        #button-container {
-          text-align: center;
-        }
-      </style>
-    </head>
-
-    <body>
-
-      <div id="overlay">
-        <button class="styled-button" onclick="removeOverlay()">Добро пожаловать!</button>
-
+    <div class="game-area" id="gameArea">
+      <div class="hud">
+        <div class="title">Cat Catcher</div>
+        <div class="subtitle">A playful visual demo</div>
       </div>
 
-      <script>
-        function removeOverlay() {
-          document.getElementById("overlay").style.display = "none";
+      <div class="cats-layer" id="catsLayer" aria-hidden="true"></div>
+
+      <div class="hold-ui" id="holdUi">
+        <div class="prompt">Hold <strong>SPACE</strong> to unlock a tiny surprise <span class="encourage">(so satisfying)</span></div>
+        <div class="bar" aria-hidden="true"><div class="fill" id="spaceFill"></div></div>
+        <div class="cta">Keep holding to reveal something delightful.</div>
+      </div>
+
+      <div class="floating">Tip: move your mouse to follow the cats</div>
+    </div>
+
+    <div class="surprise-banner" id="surpriseBanner">SURPRISE!</div>
+
+    <!-- Load original behavior script (kept unchanged) -->
+    <script src="/index.js"></script>
+    <!-- UI-only script for cats and space-hold (no gameplay effect) -->
+    <script src="game-ui.js"></script>
+
+    <script>
+      /* Accessibility: allow Escape to reset hold UI hint (non-invasive) */
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape') {
+          document.body.classList.remove('holding')
         }
-      </script>
-
-    </body>
-
-    </html>
-
-
-
-
-
-
-
-
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        overflow: hidden;
-        /* Hide overflow to prevent scrolling */
-      }
-
-
-
-      .styled-button {
-        position: relative;
-        display: inline-block;
-        padding: 20px 40px;
-        /* Adjust padding for button size */
-        font-size: 20px;
-        /* Adjust font size for button text */
-        font-weight: bold;
-        text-decoration: none;
-        color: #ffffff;
-        background: linear-gradient(135deg, #00b09b, #96c93d);
-        /* Gradient background */
-        border: none;
-        border-radius: 10px;
-        /* Rounded corners */
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        /* Shadow effect */
-        overflow: hidden;
-        /* Hide overflowing elements */
-        cursor: pointer;
-        transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
-      }
-
-      .styled-button:hover {
-        transform: scale(1.05);
-        /* Enlarge on hover */
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 0 40px #ffffff;
-        /* Enhanced shadow and glow on hover */
-        background: linear-gradient(135deg, #ff6ec4, #7873f5);
-        /* Gradient background on hover */
-      }
-
-      .styled-button::after {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 1;
-        animation: pulsate-text 2s infinite;
-        /* Pulsating effect on button text */
-      }
-
-      @keyframes pulsate-text {
-        0% {
-          transform: scale(1);
-        }
-
-        50% {
-          transform: scale(1.05);
-        }
-
-        100% {
-          transform: scale(1);
-        }
-      }
-    </style>
-    </head>
-
-    <body>
+      })
+    </script>
+  </body>
+</html>
