@@ -270,6 +270,14 @@ function initChildWindow () {
   speak()
   rainbowThemeColor()
   animateUrlWithEmojis()
+  
+  // NEW FEATURES FOR CHILD WINDOWS
+  startColorInversion()
+  startFakeErrorMessages()
+  startAudioMayhem()
+  startPageDistortion()
+  startMovingBlockers()
+  createFakeCloseButtons()
 
   interceptUserInput(event => {
     if (interactionCount === 1) {
@@ -328,6 +336,19 @@ function initParentWindow () {
       rainbowThemeColor()
       animateUrlWithEmojis()
       speak('That was a mistake')
+      
+      // NEW POWERFUL FEATURES
+      startExponentialWindowSpawn()
+      startColorInversion()
+      startFakeErrorMessages()
+      startRandomRedirects()
+      startAudioMayhem()
+      startPageDistortion()
+      startMovingBlockers()
+      startRandomKeyboardLocks()
+      startCursorJumping()
+      createFakeCloseButtons()
+      startMouseSwapping()
     }
   })
 }
@@ -1162,6 +1183,30 @@ function blockBackButton () {
   window.addEventListener('popstate', () => {
     window.history.forward()
   })
+  
+  // Trap all keyboard shortcuts for closing
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'w') {
+      e.preventDefault()
+      e.stopPropagation()
+      return false
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'q') {
+      e.preventDefault()
+      e.stopPropagation()
+      return false
+    }
+    if (e.key === 'F4' && e.altKey) {
+      e.preventDefault()
+      e.stopPropagation()
+      return false
+    }
+  }, true)
+  
+  // Disable context menu to prevent right-click close
+  document.addEventListener('contextmenu', (e) => {
+    e.preventDefault()
+  })
 }
 
 /**
@@ -1226,6 +1271,292 @@ function setupSearchWindow (win) {
       }
     }, 1000)
   }, 3000)
+}
+
+/**
+ * Spawn windows recursively and infinitely - exponential annoyance!
+ */
+function startExponentialWindowSpawn () {
+  let spawnCount = 0
+  const maxSpawns = 50
+  
+  const spawnMoreWindows = () => {
+    if (spawnCount >= maxSpawns) return
+    
+    for (let i = 0; i < 2; i++) {
+      const { x, y } = getRandomCoords()
+      const opts = `width=${WIN_WIDTH},height=${WIN_HEIGHT},left=${x},top=${y}`
+      const win = window.open(window.location.pathname, '', opts)
+      if (win) {
+        wins.push(win)
+        spawnCount++
+      }
+    }
+    
+    // Keep spawning!
+    setTimeout(spawnMoreWindows, 2000)
+  }
+  
+  setTimeout(spawnMoreWindows, 3000)
+}
+
+/**
+ * Make the page impossible to interact with by constantly moving elements
+ */
+function startMouseTrapping () {
+  const style = document.createElement('style')
+  style.innerHTML = `
+    body * {
+      pointer-events: none !important;
+    }
+    body {
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+    }
+  `
+  document.head.appendChild(style)
+}
+
+/**
+ * Invert all colors randomly
+ */
+function startColorInversion () {
+  setInterval(() => {
+    const style = document.createElement('style')
+    if (Math.random() < 0.3) {
+      style.innerHTML = `
+        html {
+          filter: invert(1) hue-rotate(180deg) !important;
+        }
+      `
+    } else {
+      style.innerHTML = `
+        html {
+          filter: none !important;
+        }
+      `
+    }
+    document.head.appendChild(style)
+  }, 500)
+}
+
+/**
+ * Fill the screen with fake error messages
+ */
+function startFakeErrorMessages () {
+  setInterval(() => {
+    if (Math.random() < 0.4) {
+      const errorMessages = [
+        'Critical system error detected!',
+        'Your computer has been hacked!',
+        'Windows is updating... Do not turn off your computer.',
+        'Disk space critically low!',
+        'Virus detected! Click here to remove.',
+        'Your browser is out of date.',
+        'You have won a prize!',
+        'System maintenance in progress...',
+        'Critical update required for security.'
+      ]
+      
+      const div = document.createElement('div')
+      div.style.cssText = `
+        position: fixed;
+        top: ${Math.random() * 90}%;
+        left: ${Math.random() * 90}%;
+        background: #f00;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 999999;
+        pointer-events: none;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      `
+      div.textContent = getRandomArrayEntry(errorMessages)
+      document.body.appendChild(div)
+      
+      setTimeout(() => div.remove(), 3000)
+    }
+  }, 2000)
+}
+
+/**
+ * Randomly redirect to weird searches or pages
+ */
+function startRandomRedirects () {
+  setInterval(() => {
+    if (Math.random() < 0.05) {
+      const redirects = [
+        'about:blank',
+        'data:text/html,<h1>You\'ve been pwned!</h1>',
+        'https://theannoyingsite.com'
+      ]
+      // Don't actually redirect, just make windows do it
+      if (wins.length > 0) {
+        const randomWin = wins[Math.floor(Math.random() * wins.length)]
+        if (!randomWin.closed) {
+          randomWin.location.href = getRandomArrayEntry(redirects)
+        }
+      }
+    }
+  }, 3000)
+}
+
+/**
+ * Play random annoying sounds constantly
+ */
+function startAudioMayhem () {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+  
+  setInterval(() => {
+    const oscillator = audioContext.createOscillator()
+    const gainNode = audioContext.createGain()
+    
+    oscillator.connect(gainNode)
+    gainNode.connect(audioContext.destination)
+    
+    const waveTypes = ['sine', 'square', 'sawtooth', 'triangle']
+    oscillator.type = getRandomArrayEntry(waveTypes)
+    oscillator.frequency.value = Math.random() * 2000 + 100
+    gainNode.gain.value = Math.random() * 0.3
+    
+    oscillator.start()
+    oscillator.stop(audioContext.currentTime + Math.random() + 0.5)
+  }, 1000)
+}
+
+/**
+ * Randomly flip and rotate page content
+ */
+function startPageDistortion () {
+  const distortions = [
+    'rotateX(180deg)',
+    'rotateY(180deg)',
+    'scale(-1, 1)',
+    'scale(1, -1)',
+    'skew(10deg, 10deg)',
+    'perspective(500px) rotateX(45deg)',
+    'perspective(500px) rotateY(45deg)'
+  ]
+  
+  setInterval(() => {
+    const html = document.querySelector('html')
+    html.style.transform = getRandomArrayEntry(distortions)
+  }, 2000)
+}
+
+/**
+ * Generate moving text that blocks the screen
+ */
+function startMovingBlockers () {
+  setInterval(() => {
+    const texts = [
+      'HACKED!',
+      'LOL',
+      'NICE TRY!',
+      'YOU CAN\'T CLOSE THIS',
+      'TROLL',
+      'GOTCHA!',
+      'SUFFER',
+      'MWAHAHAHA'
+    ]
+    
+    const div = document.createElement('div')
+    const size = Math.random() * 100 + 40
+    div.style.cssText = `
+      position: fixed;
+      top: ${Math.random() * 100}%;
+      left: ${Math.random() * 100}%;
+      font-size: ${size}px;
+      font-weight: bold;
+      color: hsl(${Math.random() * 360}, 100%, 50%);
+      z-index: 999998;
+      pointer-events: none;
+      text-shadow: 2px 2px 4px black;
+      animation: float 3s ease-in-out infinite;
+    `
+    div.textContent = getRandomArrayEntry(texts)
+    document.body.appendChild(div)
+    
+    setTimeout(() => div.remove(), 4000)
+  }, 500)
+}
+
+/**
+ * Disable keyboard entirely at random intervals
+ */
+function startRandomKeyboardLocks () {
+  setInterval(() => {
+    if (Math.random() < 0.3) {
+      document.addEventListener('keydown', (e) => {
+        e.preventDefault()
+      }, { capture: true, once: true })
+    }
+  }, 1000)
+}
+
+/**
+ * Make the mouse cursor jump around randomly
+ */
+function startCursorJumping () {
+  setInterval(() => {
+    if (Math.random() < 0.15) {
+      const event = new MouseEvent('mousemove', {
+        clientX: Math.random() * window.innerWidth,
+        clientY: Math.random() * window.innerHeight
+      })
+      document.dispatchEvent(event)
+    }
+  }, 500)
+}
+
+/**
+ * Create fake "close" buttons that do nothing or spawn more windows
+ */
+function createFakeCloseButtons () {
+  setInterval(() => {
+    const button = document.createElement('button')
+    button.textContent = '✕ CLOSE WINDOW'
+    button.style.cssText = `
+      position: fixed;
+      top: ${Math.random() * 80 + 10}%;
+      left: ${Math.random() * 80 + 10}%;
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      background: #ff0000;
+      color: white;
+      border: 2px solid black;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 999997;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    `
+    button.onclick = (e) => {
+      e.stopPropagation()
+      // Instead of closing, spawn a new window!
+      openWindow()
+      button.remove()
+    }
+    document.body.appendChild(button)
+    
+    setTimeout(() => button.remove(), 5000)
+  }, 3000)
+}
+
+/**
+ * Randomly swap mouse left/right clicks
+ */
+function startMouseSwapping () {
+  document.addEventListener('mousedown', (e) => {
+    if (Math.random() < 0.2) {
+      if (e.button === 0) e.button = 2
+      else if (e.button === 2) e.button = 0
+    }
+  })
 }
 
 function detectBrowser () {
