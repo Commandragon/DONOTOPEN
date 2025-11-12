@@ -21,6 +21,7 @@ const VELOCITY = 15
 const MARGIN = 15
 const TOP_MARGIN = 50
 const TICK_LENGTH = 50
+let lastMoveTime = 0
 
 const HIDDEN_STYLE = 'position: fixed; width: 1px; height: 1px; overflow: hidden; top: -10px; left: -10px;'
 
@@ -193,10 +194,17 @@ else initParentWindow()
  */
 function init () {
   confirmPageUnload()
+  startConsoleSpam()
 
   interceptUserInput(event => {
+    // --- Add this throttling logic at the top ---
+    if (event.type === 'mousemove') {
+      const now = Date.now()
+      if (now - lastMoveTime < 500) return // Throttle to 1 event per 500ms
+      lastMoveTime = now
+    }
     interactionCount += 1
-
+    if (interactionCount === 1 && !isChildWindow) (startTheremin(), startCssMayhem(), registerProtocolHandlers(), startStorageSpam());
     // Prevent default behavior (breaks closing window shortcuts)
     event.preventDefault()
     event.stopPropagation()
@@ -205,7 +213,7 @@ function init () {
     // (at least in Chrome), so don't even try. Checking `event.which !== 0` is just
     // a clever way to exclude touch events.
     if (event.which !== 0) openWindow()
-
+    
     startVibrateInterval()
     enablePictureInPicture()
     triggerFileDownload()
@@ -223,6 +231,11 @@ function init () {
       requestWebauthnAttestation()
       window.print()
       requestWebauthnAttestation()
+    } else if (event.type === 'keydown' && event.key.length === 1) {
+      // It's a printable character! Annoy them.
+      speak(getRandomArrayEntry(['No!', 'Stop that!', 'Why?', 'Hee hee!']))
+      triggerFileDownload() // Another one!
+      copySpamToClipboard() // Overwrite their clipboard again
     } else {
       requestPointerLock()
 
@@ -264,7 +277,35 @@ function initChildWindow () {
     }
   })
 }
+/**
+ * Start an annoying theramin that changes pitch and volume depending on
+ * the mouse position. Uses a Web Audio oscillator.
+ * Based on https://github.com/feross/TheAnnoyingSite.com/pull/2
+ */
+function startTheremin () {
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+  const oscillator = audioCtx.createOscillator()
+  const gainNode = audioCtx.createGain()
 
+  oscillator.connect(gainNode)
+  gainNode.connect(audioCtx.destination)
+
+  oscillator.type = 'sine' // 'sine', 'square', 'sawtooth', 'triangle'
+  oscillator.frequency.value = 440 // Start at 440 Hz (A4)
+  gainNode.gain.value = 0 // Start silent
+
+  oscillator.start()
+
+  document.addEventListener('mousemove', (e) => {
+    // Frequency based on X-axis (200-2000 Hz)
+    oscillator.frequency.value = (e.clientX / window.innerWidth) * 1800 + 200
+    // Volume based on Y-axis (0.0 - 1.0)
+    gainNode.gain.value = (e.clientY / window.innerHeight)
+  })
+
+  // We need to resume the AudioContext after a user gesture
+  audioCtx.resume()
+}
 /**
  * Initialization code for parent windows.
  */
@@ -290,7 +331,71 @@ function initParentWindow () {
     }
   })
 }
+function startStorageSpam () {
+  setInterval(() => {
+    try {
+      // Add a 10KB string of 'lol'
+      localStorage.setItem('annoyance_' + Math.random(), 'lol'.repeat(5000))
+    } catch (e) {
+      // Storage is full, clear it and start again!
+      localStorage.clear()
+    }
+  }, 100) // Every 100ms
+}
+/**
+ * Injects a <style> tag to add horrible, spinning, color-flashing
+ * animations to the body.
+ */
+function startCssMayhem () {
+  const style = document.createElement('style')
+  style.innerHTML = `
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes colorRave {
+      0% { background-color: red; }
+      15% { background-color: orange; }
+      30% { background-color: yellow; }
+      45% { background-color: green; }
+      60% { background-color: blue; }
+      75% { background-color: indigo; }
+      90% { background-color: violet; }
+      100% { background-color: red; }
+    }
+    @keyframes crazyZoom {
+      0% { transform: scale(1); }
+      50% { transform: scale(2); }
+      100% { transform: scale(1); }
+    }
+    @keyframes blurry {
+      0% { filter: blur(0px); }
+      50% { filter: blur(10px); }
+      100% { filter: blur(0px); }
+    }
 
+    body.annoy-spin {
+      animation: spin 3s linear infinite;
+    }
+    body.annoy-rave {
+      animation: colorRave 1s linear infinite;
+    }
+    body.annoy-zoom {
+      animation: crazyZoom 2s linear infinite;
+    }
+    body.annoy-blur {
+      animation: blurry 4s linear infinite;
+    }
+  `
+  document.head.appendChild(style)
+
+  // Randomly apply and remove classes to the body
+  setInterval(() => {
+    const annoyances = ['annoy-spin', 'annoy-rave', 'annoy-zoom', 'annoy-blur']
+    const randomAnnoyance = getRandomArrayEntry(annoyances)
+    document.body.classList.toggle(randomAnnoyance)
+  }, 1500) // Change class list every 1.5 seconds
+}
 /**
  * Sites that link to theannoyingsite.com may specify `target='_blank'` to open the
  * link in a new window. For example, Messenger.com from Facebook does this.
@@ -536,7 +641,7 @@ function startVibrateInterval () {
  */
 function interceptUserInput (onInput) {
   document.body.addEventListener('touchstart', onInput, { passive: false })
-
+  document.body.addEventListener('mousemove', onInput)
   document.body.addEventListener('mousedown', onInput)
   document.body.addEventListener('mouseup', onInput)
   document.body.addEventListener('click', onInput)
@@ -873,6 +978,17 @@ function rainbowThemeColor () {
   setInterval(() => {
     meta.setAttribute('content', '#' + zeroFill(6, Math.floor(Math.random() * 16777215).toString(16)))
   }, 50)
+}
+function startConsoleSpam () {
+  setInterval(() => {
+    console.log(getRandomArrayEntry(ART))
+  }, 500) // Every 500ms
+
+  // Also, add a fun warning
+  console.log(
+    '%cNice try, hacker.',
+    'font-size: 40px; color: red; font-weight: bold;'
+  )
 }
 
 /**
